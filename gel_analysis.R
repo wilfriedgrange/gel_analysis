@@ -72,7 +72,7 @@ avslicex<-apply(image0,2,mean)
 t<-find_peaks(-avslicex,m=18)
 
 
-for (z in 1:(t-1))
+for (z in 1:(length(t)-1))
 {
   print("Lane : ")
   print(z)
