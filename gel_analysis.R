@@ -1,5 +1,5 @@
 rm(list=ls())# clean memory
-library(baseline) 
+if (!require(baseline)) install.packages('baseline')
 image_file <- '/Users/wgrange/desktop/im.txt' # 8 bits file
 ################################
 ################################
