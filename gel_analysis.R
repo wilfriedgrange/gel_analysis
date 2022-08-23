@@ -89,10 +89,10 @@ for (z in 1:(length(t)-1))
   avslicex<-apply(image0[,t[z]:t[z+1]],1,mean)
   # Baseline correction
   cut<-length(avslicex)/2
-  bc.rollingBall_highMW <- baseline(t(matrix(avslicex[1:cut])),wm_lowMW, ws,method='rollingBall')
+  bc.rollingBall_highMW <- baseline(t(matrix(avslicex[1:cut])),wm_highMW, ws,method='rollingBall')
   getb_highMW<-as.vector(getBaseline( bc.rollingBall_highMW ))
   getc_highMW<-as.vector(getCorrected( bc.rollingBall_highMW ))->getc_duplicated_highMW
-  bc.rollingBall_lowMW <- baseline(t(matrix(avslicex[cut:length(avslicex)])),wm_highMW, ws,method='rollingBall')
+  bc.rollingBall_lowMW <- baseline(t(matrix(avslicex[cut:length(avslicex)])),wm_lowMW, ws,method='rollingBall')
   getb_lowMW <-as.vector(getBaseline( bc.rollingBall_lowMW  ))
   getc_lowMW <-as.vector(getCorrected( bc.rollingBall_lowMW  ))->getc_duplicated_lowMW 
   getc<-c(getc_highMW,getc_lowMW)->getc_duplicated
