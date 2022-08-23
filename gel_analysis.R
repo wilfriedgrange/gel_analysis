@@ -10,8 +10,8 @@ image_file <- 'IM1.txt' # 8 bits file
 ################################
 ################################
 ws<-10 # smooth baseline (change !)
-wm_lowMW<-10# wm for low Molecular Weight (change !)
-wm_highMW<-15 #  wm for high Molecular Weight (change !)
+wm_highMW<-10 #  wm for high Molecular Weight (change !)
+wm_lowMW<-15# wm for low Molecular Weight (change !)
 half_size<-18 # half fitting range (change !)
 m_cut<- 18 # used to separate lanes (change !)
 
