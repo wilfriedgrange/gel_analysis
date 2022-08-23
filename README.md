@@ -6,6 +6,14 @@ For the demo, you may use the attached .txt file, which is a 8 bit file.
 
 ![IM1](https://user-images.githubusercontent.com/110093777/186207086-f66c5fc9-5ace-4b64-9f10-49bde83b6c26.jpg)
 
+```
+ws<-10 # smooth baseline (change !)
+wm_lowMW<-10# wm for low Molecular Weight (change !)
+wm_highMW<-15 #  wm for high Molecular Weight (change !)
+half_size<-18 # half fitting range (change !)
+m_cut<- 18 # used to separate lanes (change !)
+```
+
 Here, the .R file should ouput 12 plots that correspond to the 12 lanes. 
 
 For Lane 11
