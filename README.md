@@ -1,6 +1,6 @@
 # gel_analysis
 
-Automaticallt determine band intensities on an agarose gel.
+Automatically determine band intensities on an agarose gel.
 
 For the demo, you may use the attached .txt file, which is a 8 bit file. 
 
