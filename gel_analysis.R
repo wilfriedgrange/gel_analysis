@@ -1,7 +1,20 @@
-rm(list=ls())# clean memory
-if (!require(baseline)) install.packages('baseline')
-image_file <- '/Users/wgrange/desktop/im.txt' # 8 bits file
+rrm(list=ls())# clean memory
+if (!require(baseline)) install.packages('baseline') # baseline package
+setwd(dirname(rstudioapi::getSourceEditorContext()$path)) # set wd
+image_file <- 'IM1.txt' # 8 bits file
+
 ################################
+################################
+#### parameters ################
+################################
+################################
+################################
+ws<-10 # smooth baseline (change !)
+wm_lowMW<-10# wm for low Molecular Weight (change !)
+wm_highMW<-15 #  wm for high Molecular Weight (change !)
+half_size<-18 # half fitting range (change !)
+m_cut<- 18 # used to separate lanes (change !)
+
 ################################
 #### functions #################
 ################################
@@ -32,15 +45,14 @@ find_peaks <- function (x, m = 5){
 ################################
 # Peak Fitting Function
 ################################
-peak_fit<-function(Peak,getc,counter,num_peak,all) {
-  half_size<-18 # half fitting range
+peak_fit<-function(Peak,getc,num_peak,half_size = 10) {
   f1 <- function(par) # Gaussian fit
   {
     m <- par[1]
     sd <- par[2]
     k <- par[3]
     rhat <- abs(k) * exp(-0.5 * ((x - m)/sd)^2) 
-    sum((r - rhat)^2)
+    sum((r - rhat)^2) # as in Least Squares
   }
   # This is the section where we fit
   r<-getc[(Peak-half_size):(Peak+half_size)]
@@ -67,20 +79,24 @@ peak_fit<-function(Peak,getc,counter,num_peak,all) {
 image0<-read.csv(image_file,header=F,sep='\t')
 # convert to a matrix  
 image0<-data.matrix(image0)
-# Average slices
+# Average slices (this determines lanes)
 avslicex<-apply(image0,2,mean)
-t<-find_peaks(-avslicex,m=18)
-
+t<-find_peaks(-avslicex,m_cut)
 
 for (z in 1:(length(t)-1))
 {
-  print("Lane : ")
-  print(z)
+  print('Analyzing new lane ....')
   avslicex<-apply(image0[,t[z]:t[z+1]],1,mean)
   # Baseline correction
-  bc.rollingBall <- baseline(t(matrix(avslicex)),wm=10, ws=10,method='rollingBall')
-  getb<-as.vector(getBaseline(bc.rollingBall))
-  getc<-as.vector(getCorrected(bc.rollingBall))->getc_duplicated
+  cut<-length(avslicex)/2
+  bc.rollingBall_highMW <- baseline(t(matrix(avslicex[1:cut])),wm_lowMW, ws,method='rollingBall')
+  getb_highMW<-as.vector(getBaseline( bc.rollingBall_highMW ))
+  getc_highMW<-as.vector(getCorrected( bc.rollingBall_highMW ))->getc_duplicated_highMW
+  bc.rollingBall_lowMW <- baseline(t(matrix(avslicex[cut:length(avslicex)])),wm_highMW, ws,method='rollingBall')
+  getb_lowMW <-as.vector(getBaseline( bc.rollingBall_lowMW  ))
+  getc_lowMW <-as.vector(getCorrected( bc.rollingBall_lowMW  ))->getc_duplicated_lowMW 
+  getc<-c(getc_highMW,getc_lowMW)->getc_duplicated
+
   # Plots
   layout(matrix(c(1,2), 1, 2, byrow = TRUE),
          widths =c(1,4))
@@ -96,7 +112,8 @@ for (z in 1:(length(t)-1))
   t2<-t2[which(t2>18)] # and just keep those which are high enough
   # and fit
   values<-sapply(t2, function(w){
-    peak_fit(w,getc,counter,length(t2),1)
+    peak_fit(w,getc,length(t2),half_size)
   }
   )
 }
+print('done ....')
